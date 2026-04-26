@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cloud Coffee</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:url('https://images.unsplash.com/photo-1509042239860-f550ce710b93') no-repeat center/cover fixed;
+  color:white;
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  padding:20px;
+  background:rgba(0,0,0,0.7);
+}
+
+nav a{
+  margin:0 10px;
+  color:white;
+  text-decoration:none;
+}
+
+.container{
+  padding:30px;
+  animation:fadeIn 1.5s;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px)}
+  to{opacity:1;}
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+}
+
+.card{
+  background:rgba(0,0,0,0.6);
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:scale(1.05);
+}
+
+button{
+  padding:10px;
+  border:none;
+  background:#c97b3a;
+  color:white;
+  cursor:pointer;
+}
+
+.cart{
+  position:fixed;
+  right:0;
+  top:0;
+  background:black;
+  width:250px;
+  height:100%;
+  padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>☕ Cloud Coffee</h2>
+<nav>
+<a href="#">Home</a>
+</nav>
+</header>
+
+<div class="container">
+
+<h2>Login</h2>
+<input id="loginEmail" placeholder="Email">
+<input id="loginPassword" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+
+<h2>Signup</h2>
+<input id="signupEmail" placeholder="Email">
+<input id="signupPassword" type="password" placeholder="Password">
+<button onclick="signup()">Signup</button>
+
+<h2>Menu</h2>
+<div class="products">
+  <div class="card">
+    <h3>Latte</h3>
+    <p>₹150</p>
+    <button onclick="addToCart('Latte',150)">Add</button>
+  </div>
+
+  <div class="card">
+    <h3>Espresso</h3>
+    <p>₹120</p>
+    <button onclick="addToCart('Espresso',120)">Add</button>
+  </div>
+</div>
+
+<h2>Contact Us</h2>
+<input placeholder="Your Name">
+<textarea placeholder="Your Query"></textarea>
+<button onclick="alert('Query Sent!')">Send</button>
+
+</div>
+
+<div class="cart">
+<h3>Cart</h3>
+<ul id="cart"></ul>
+<p>Total ₹<span id="total">0</span></p>
+</div>
+
+<script>
+let total = 0;
+const API = "http://localhost:3000";
+
+function addToCart(name, price){
+  const li = document.createElement("li");
+  li.innerText = name + " ₹" + price;
+  document.getElementById("cart").appendChild(li);
+
+  total += price;
+  document.getElementById("total").innerText = total;
+}
+
+async function signup(){
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
+
+  const res = await fetch(API + "/signup",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email,password})
+  });
+
+  const data = await res.json();
+  alert(data.message);
+}
+
+async function login(){
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const res = await fetch(API + "/login",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email,password})
+  });
+
+  const data = await res.json();
+  alert(data.message);
+}
+</script>
+
+</body>
+</html>
